@@ -55,7 +55,7 @@
                             $.each(data, function (i, n) {
                                 html += '<tr>';
                                 html += '<td><input type="radio" name="xz" name="activity" value="' + n.id + '"/></td>';
-                                html += '<td>' + n.name + '</td>';
+                                html += '<td id="'+n.id+'">' + n.name + '</td>';
                                 html += '<td>' + n.startDate + '</td>';
                                 html += '<td>' + n.endDate + '</td>';
                                 html += '<td>' + n.owner + '</td>';
@@ -67,6 +67,19 @@
                     // 禁用模态窗口 回车效果
                     return false;
                 }
+            })
+            // 模态窗口 提交
+            $("#submitActivityBtn").click(function(){
+                // 市场活动id
+                var $xz=$("input[name=xz]:checked");
+                var id=$xz.val();
+                // 市场活动名字
+                var name=$("#"+id).html();
+                // 输入框写入
+                $("#activityName").val(name);
+                // 隐藏表单写入
+                $("#activityId").val(id);
+                $("#searchActivityModal").modal("hide");
             })
         });
     </script>
@@ -124,6 +137,10 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="submitActivityBtn">提交</button>
+                </div>
             </div>
         </div>
     </div>
@@ -171,7 +188,8 @@
                                                           data-target="#searchActivityModal"
                                                           style="text-decoration: none;"><span
                         class="glyphicon glyphicon-search"></span></a></label>
-                <input type="text" class="form-control" id="activity" placeholder="点击上面搜索" readonly>
+                <input type="text" class="form-control" id="activityName" placeholder="点击上面搜索" readonly>
+                <input type="hidden" id="activityId"/>
             </div>
         </form>
 
