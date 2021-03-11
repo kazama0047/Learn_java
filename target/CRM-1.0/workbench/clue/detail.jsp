@@ -398,7 +398,7 @@
         </div>
         <div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
             <button type="button" class="btn btn-default"
-                    onclick="window.location.href='workbench/clue/convert.jsp?id=${c.id}&fullname=${c.fullname}&appellcation=${c.appellcation}&company=${c.company}&owner=${c.owner}';">
+                    onclick="window.location.href='workbench/clue/convert.jsp?id=${c.id}&fullname=${c.fullname}&appellation=${c.appellation}&company=${c.company}&owner=${c.owner}';">
                 <span class="glyphicon glyphicon-retweet"></span> 转换
             </button>
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span

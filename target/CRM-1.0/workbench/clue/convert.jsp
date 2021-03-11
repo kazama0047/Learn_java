@@ -1,11 +1,11 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-    String id = request.getParameter("id");
+    /*String id = request.getParameter("id");
     String fullname = request.getParameter("fullname");
-    String appellation = request.getParameter("application");
+    String appellation = request.getParameter("appellation");
     String company = request.getParameter("company");
-    String owner = request.getParameter("owner");
+    String owner = request.getParameter("owner");*/
 %>
 <html>
 <head>
@@ -91,13 +91,13 @@
     </div>
 
     <div id="title" class="page-header" style="position: relative; left: 20px;">
-        <h4>转换线索 <small><%=fullname%><%=appellation%>-<%=company%></small></h4>
+        <h4>转换线索 <small>${param.fullname}${param.appellation}-${param.company}</small></h4>
     </div>
     <div id="create-customer" style="position: relative; left: 40px; height: 35px;">
-        新建客户：<%=company%>
+        新建客户：${param.company}
     </div>
     <div id="create-contact" style="position: relative; left: 40px; height: 35px;">
-        新建联系人：<%=fullname%><%=appellation%>
+        新建联系人：${param.fullname}${param.appellation}
     </div>
     <div id="create-transaction1" style="position: relative; left: 40px; height: 35px; top: 25px;">
         <input type="checkbox" id="isCreateTransaction"/>
@@ -147,7 +147,7 @@
 
     <div id="owner" style="position: relative; left: 40px; height: 35px; top: 50px;">
         记录的所有者：<br>
-        <b><%=owner%></b>
+        <b>${param.owner}</b>
     </div>
     <div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
         <input class="btn btn-primary" type="button" value="转换">

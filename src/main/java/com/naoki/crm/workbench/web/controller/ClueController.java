@@ -85,6 +85,7 @@ public class ClueController extends HttpServlet {
     }
 
     private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("detail");
         String id = request.getParameter("id");
         ClueService service= (ClueService) ServiceFactory.getService(new ClueServiceImpl());
         Clue clue=service.detail(id);
