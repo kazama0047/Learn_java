@@ -1,9 +1,11 @@
 package com.naoki.crm.workbench.service.impl;
 
 import com.naoki.crm.utils.SqlSessionUtil;
+import com.naoki.crm.utils.UUIDUtil;
 import com.naoki.crm.workbench.dao.ClueActivityRelationDao;
 import com.naoki.crm.workbench.dao.ClueDao;
 import com.naoki.crm.workbench.domain.Clue;
+import com.naoki.crm.workbench.domain.ClueActivityRelation;
 import com.naoki.crm.workbench.service.ClueService;
 
 /**
@@ -36,6 +38,22 @@ public class ClueServiceImpl implements ClueService {
         int count=clueActivityRelationDao.unbund(id);
         if(count!=1){
             flag=false;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean bund(String cid, String[] aids) {
+        boolean flag=true;
+        for(String aid:aids){
+            ClueActivityRelation car=new ClueActivityRelation();
+            car.setId(UUIDUtil.getUUID());
+            car.setClueId(cid);
+            car.setActivityId(aid);
+            int count=clueActivityRelationDao.bund(car);
+            if(count!=1){
+                flag=false;
+            }
         }
         return flag;
     }

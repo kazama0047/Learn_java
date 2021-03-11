@@ -67,16 +67,49 @@
                             $.each(data, function (i, n) {
                                 html += '<tr>';
                                 html += '<td><input type="checkbox" name="xz" value="' + n.id + '"/></td>';
-                                html += '<td>'+n.name+'</td>';
-                                html += '<td>'+n.startDate+'</td>';
-                                html += '<td>'+n.endDate+'</td>';
-                                html += '<td>'+n.owner+'</td>';
+                                html += '<td>' + n.name + '</td>';
+                                html += '<td>' + n.startDate + '</td>';
+                                html += '<td>' + n.endDate + '</td>';
+                                html += '<td>' + n.owner + '</td>';
                                 html += '</tr>';
                             })
                             $("#activitySearchBody").html(html);
                         }
                     })
                     return false;
+                }
+            })
+            // 关联活动 添加
+            $("#bundBtn").click(function () {
+                var $xz = $("input[name=xz]:checked");
+                if ($xz.length == 0) {
+                    alert("请选择需要关联的市场活动");
+                } else {
+                    // 参数传递: bund.do?cid=xxx&aid=xxx&aid=xxx
+                    var param = "cid=${c.id}&";
+                    for (var i = 0; i < $xz.length; i++) {
+                        param += "aid=" + $($xz[i]).val();
+                        if (i < $xz.length - 1) {
+                            param += "&";
+                        }
+                    }
+                    $.ajax({
+                        url:"workbench/clue/bund.do",
+                        data:param,
+                        dataType:"json",
+                        type:"post",
+                        success:function(data){
+                            // {success:true/false}
+                            if(data.success){
+                                // 刷新关联市场列表
+                                showActivityList();
+                                // 关闭模态窗口
+                                $("#bundModal").modao("hide");
+                            }else{
+
+                            }
+                        }
+                    })
                 }
             })
             // 页面加载后,获取市场活动列表
@@ -184,7 +217,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+                    <button type="button" class="btn btn-primary" id="bundBtn">关联</button>
                 </div>
             </div>
         </div>

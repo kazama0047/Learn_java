@@ -43,7 +43,18 @@ public class ClueController extends HttpServlet {
             unbund(request,response);
         }else if("/workbench/clue/getActivityListByNameAndNotByClueId.do".equals(path)){
             getActivityListByNameAndNotByClueId(request,response);
+        }else if("/workbench/clue/bund.do".equals(path)){
+            bund(request,response);
         }
+    }
+
+    private void bund(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("新增关联市场活动");
+        String cid = request.getParameter("cid");
+        String[] aids = request.getParameterValues("aid");
+        ClueService service= (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        boolean flag=service.bund(cid,aids);
+        PrintJson.printJsonFlag(response, flag);
     }
 
     private void getActivityListByNameAndNotByClueId(HttpServletRequest request, HttpServletResponse response) {
