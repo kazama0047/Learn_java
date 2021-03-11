@@ -47,6 +47,16 @@ public class ClueController extends HttpServlet {
             bund(request,response);
         }else if("/workbench/clue/getActivityListByName.do".equals(path)){
             getActivityListByName(request,response);
+        }else if("/workbench/clue/convert.do".equals(path)){
+            convert(request,response);
+        }
+    }
+
+    private void convert(HttpServletRequest request, HttpServletResponse response) {
+        String clueId = request.getParameter("clueId");
+        String flag = request.getParameter("flag");
+        if("form".equals(flag)){
+            
         }
     }
 
