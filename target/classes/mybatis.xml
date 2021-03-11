@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="jdbc.properties"/>
+    <!--    控制mybatis全局行为-->
+<!--    <settings>-->
+<!--&lt;!&ndash;        向控制台输出日志&ndash;&gt;-->
+<!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
+<!--    </settings>-->
+
+    <!--    mapper中resultType的别名-->
+    <!--    <typeAliases>-->
+    <!--        <package name="实体类包名"/>-->
+    <!--    </typeAliases>-->
+
+    <environments default="dataSource">
+        <environment id="dataSource">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.userName}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--    sql mapper映射文件的位置-->
+    <mappers>
+        <package name="com.naoki.crm.settings.dao"/>
+        <package name="com.naoki.crm.workbench.dao"/>
+    </mappers>
+</configuration>
