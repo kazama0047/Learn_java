@@ -120,4 +120,9 @@
                 where clueId=#{clueId}
             )
     </select>
+    <select id="getActivityListByName" resultType="com.naoki.crm.workbench.domain.Activity">
+        select a.id,a.name,a.startDate,a.endDate,u.name owner
+            from tbl_activity a join tbl_user u on a.owner=u.id
+            where a.name like '%' #{aname} '%'
+    </select>
 </mapper>
