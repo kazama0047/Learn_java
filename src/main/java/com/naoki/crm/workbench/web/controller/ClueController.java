@@ -19,7 +19,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kazama
@@ -45,6 +47,15 @@ public class ClueController extends HttpServlet {
     }
 
     private void getActivityListByNameAndNotByClueId(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("查询市场活动列表(模糊查询+排除已关联)");
+        String aname = request.getParameter("aname");
+        String clueId = request.getParameter("clueId");
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("aname",aname);
+        map.put("clueId",clueId);
+        ActivityService service= (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        List<Activity> list=service.getActivityByNameAndNotByClueId(map);
+        PrintJson.printJsonObj(response, list);
     }
 
     private void unbund(HttpServletRequest request, HttpServletResponse response) {

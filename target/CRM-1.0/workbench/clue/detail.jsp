@@ -51,18 +51,29 @@
                 $(this).children("span").css("color", "#E6E6E6");
             });
             // 关联活动 的 搜索框
-            $("#aname").keydown(function(event){
-                if(event.keycode==13){
+            $("#aname").keydown(function (event) {
+                if (event.keyCode == 13) {
                     $.ajax({
-                        url:"workbench/clue/getActivityListByNameAndNotByClueId.do",
-                        data:{
-                            aname:$.trim($("#aname").val()),
-                            clueId:"${c.id}"
+                        url: "workbench/clue/getActivityListByNameAndNotByClueId.do",
+                        data: {
+                            aname: $.trim($("#aname").val()),
+                            clueId: "${c.id}"
                         },
-                        dataType:"json",
-                        type:"get",
-                        success:function(data){
-
+                        dataType: "json",
+                        type: "get",
+                        success: function (data) {
+                            // [{活动1},{活动2}...]
+                            var html = "";
+                            $.each(data, function (i, n) {
+                                html += '<tr>';
+                                html += '<td><input type="checkbox" name="xz" value="' + n.id + '"/></td>';
+                                html += '<td>'+n.name+'</td>';
+                                html += '<td>'+n.startDate+'</td>';
+                                html += '<td>'+n.endDate+'</td>';
+                                html += '<td>'+n.owner+'</td>';
+                                html += '</tr>';
+                            })
+                            $("#activitySearchBody").html(html);
                         }
                     })
                     return false;
@@ -102,15 +113,15 @@
         //活动解绑
         function unbund(id) {
             $.ajax({
-                url:"workbench/clue/unbund.do",
-                data:{id:id},
-                dataType:"json",
-                type:"get",
-                success:function(data){
-                    if(data.success){
+                url: "workbench/clue/unbund.do",
+                data: {id: id},
+                dataType: "json",
+                type: "get",
+                success: function (data) {
+                    if (data.success) {
                         // 刷新列表
                         showActivityList();
-                    }else{
+                    } else {
                         alert("解绑失败");
                     }
                 }
@@ -154,20 +165,20 @@
                         </tr>
                         </thead>
                         <tbody id="activitySearchBody">
-<%--                        <tr>--%>
-<%--                            <td><input type="checkbox"/></td>--%>
-<%--                            <td>发传单</td>--%>
-<%--                            <td>2020-10-10</td>--%>
-<%--                            <td>2020-10-20</td>--%>
-<%--                            <td>zhangsan</td>--%>
-<%--                        </tr>--%>
-<%--                        <tr>--%>
-<%--                            <td><input type="checkbox"/></td>--%>
-<%--                            <td>发传单</td>--%>
-<%--                            <td>2020-10-10</td>--%>
-<%--                            <td>2020-10-20</td>--%>
-<%--                            <td>zhangsan</td>--%>
-<%--                        </tr>--%>
+                        <%--                        <tr>--%>
+                        <%--                            <td><input type="checkbox"/></td>--%>
+                        <%--                            <td>发传单</td>--%>
+                        <%--                            <td>2020-10-10</td>--%>
+                        <%--                            <td>2020-10-20</td>--%>
+                        <%--                            <td>zhangsan</td>--%>
+                        <%--                        </tr>--%>
+                        <%--                        <tr>--%>
+                        <%--                            <td><input type="checkbox"/></td>--%>
+                        <%--                            <td>发传单</td>--%>
+                        <%--                            <td>2020-10-10</td>--%>
+                        <%--                            <td>2020-10-20</td>--%>
+                        <%--                            <td>zhangsan</td>--%>
+                        <%--                        </tr>--%>
                         </tbody>
                     </table>
                 </div>

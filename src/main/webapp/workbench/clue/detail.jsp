@@ -52,7 +52,7 @@
             });
             // 关联活动 的 搜索框
             $("#aname").keydown(function (event) {
-                if (event.keycode == 13) {
+                if (event.keyCode == 13) {
                     $.ajax({
                         url: "workbench/clue/getActivityListByNameAndNotByClueId.do",
                         data: {
