@@ -128,7 +128,7 @@
             // 联系人提交
             $("#submitContactBtn").click(function () {
                 let id = $("input[name=contacts]:checked").val();
-                let name = $("#" + id).val();
+                let name = $("#" + id).text();
                 $("#contactsId").val(id);
                 $("#create-contactsName").val(name);
                 $("#findContacts").modal("hide");
