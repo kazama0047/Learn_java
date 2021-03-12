@@ -75,4 +75,14 @@
         <url-pattern>/workbench/clue/getActivityListByName.do</url-pattern>
         <url-pattern>/workbench/clue/convert.do</url-pattern>
     </servlet-mapping>
+<!--    交易控制器-->
+    <servlet>
+        <servlet-name>tranController</servlet-name>
+        <servlet-class>com.naoki.crm.workbench.web.controller.TranController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>tranController</servlet-name>
+<!--        创建交易-->
+        <url-pattern>/workbench/transaction/add.do</url-pattern>
+    </servlet-mapping>
 </web-app>

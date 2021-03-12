@@ -190,18 +190,21 @@ public class ClueServiceImpl implements ClueService {
                 flag=false;
             }
         }
+        // 删除线索备注
         for(ClueRemark clueRemark:clueRemarkList){
             int count8=clueRemarkDao.delete(clueRemark);
             if(count8!=1){
                 flag=false;
             }
         }
+        // 删除线索活动关联
         for(ClueActivityRelation clueActivityRelation:clueActivityRelationList){
             int count9=clueActivityRelationDao.delete(clueActivityRelation);
             if(count9!=1){
                 flag=false;
             }
         }
+        // 删除线索
         int count10=clueDao.delete(clueId);
         if(count10!=1){
             flag=false;
