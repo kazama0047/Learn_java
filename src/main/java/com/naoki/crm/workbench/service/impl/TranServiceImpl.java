@@ -3,6 +3,7 @@ package com.naoki.crm.workbench.service.impl;
 import com.naoki.crm.utils.SqlSessionUtil;
 import com.naoki.crm.workbench.dao.TranDao;
 import com.naoki.crm.workbench.dao.TranHistoryDao;
+import com.naoki.crm.workbench.domain.Tran;
 import com.naoki.crm.workbench.service.TranService;
 
 /**
@@ -13,4 +14,9 @@ public class TranServiceImpl implements TranService {
     private TranDao tranDao= SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
     private TranHistoryDao tranHistoryDao=SqlSessionUtil.getSqlSession().getMapper(TranHistoryDao.class);
 
+    @Override
+    public boolean save(Tran t, String customerName) {
+        
+        return false;
+    }
 }

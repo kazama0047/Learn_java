@@ -90,5 +90,7 @@
         <url-pattern>/workbench/transaction/searchContactsListByName.do</url-pattern>
 <!--        自动补全-->
         <url-pattern>/workbench/transaction/getCustomerName.do</url-pattern>
+<!--        交易表单提交-->
+        <url-pattern>/workbench/transaction/save.do</url-pattern>
     </servlet-mapping>
 </web-app>
