@@ -41,6 +41,9 @@
             #{address}
         )
     </insert>
+    <select id="getContactsListByName" resultType="com.naoki.crm.workbench.domain.Contacts">
+        select * from tbl_contacts where fullname like '%' #{name} '%'
+    </select>
 </mapper>
 
 

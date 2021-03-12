@@ -84,5 +84,9 @@
         <servlet-name>tranController</servlet-name>
 <!--        创建交易-->
         <url-pattern>/workbench/transaction/add.do</url-pattern>
+<!--        市场活动源-->
+        <url-pattern>/workbench/transaction/searchActivityByName.do</url-pattern>
+<!--        联系人-->
+        <url-pattern>/workbench/transaction/searchContactsListByName.do</url-pattern>
     </servlet-mapping>
 </web-app>

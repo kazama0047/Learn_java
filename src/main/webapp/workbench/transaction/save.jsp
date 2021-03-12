@@ -17,12 +17,100 @@
     <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
     <script type="text/javascript"
             src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $(function () {
+            // 时间控件 向下显示
+            $(".time1").datetimepicker({
+                minView: "month",
+                language: 'zh-CN',
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayBtn: true,
+                pickerPosition: "bottom-left"
+            });
+            // 时间控件 向上显示
+            $(".time2").datetimepicker({
+                minView: "month",
+                language: 'zh-CN',
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayBtn: true,
+                pickerPosition: "top-left"
+            });
+            // 市场活动源
+            $("#aname").keydown(function (event) {
+                if (event.keyCode == 13) {
+                    $.ajax({
+                        url: "workbench/transaction/searchActivityByName.do",
+                        data: {name: $.trim($("#aname").val())},
+                        dataType: "json",
+                        type: "get",
+                        success: function (data) {
+                            var html = "";
+                            $.each(data, function (i, n) {
+                                html += '<tr>';
+                                html += '<td><input type="radio" name="activity" value="' + n.id + '"/></td>';
+                                html += '<td id="' + n.id + '">' + n.name + '</td>';
+                                html += '<td>' + n.startDate + '</td>';
+                                html += '<td>' + n.endDate + '</td>';
+                                html += '<td>' + n.owner + '</td>';
+                                html += '</tr>';
+                            })
+                            $("#activityBody").html(html);
+                        }
+                    })
+                    return false;
+                }
+            })
+            // 市场活动源提交
+            $("#submitActivityBtn").click(function () {
+                let id = $("input[name=activity]:checked").val();
+                $("#activityId").val(id);
+                let name = $("#" + id).html();
+                $("#create-activitySrc").val(name);
+                $("#findMarketActivity").modal("hide");
+            })
+            // 联系人
+            $("#search-contact").keydown(function (event) {
+                if (event.keyCode == 13) {
+                    $.ajax({
+                        url: "workbench/transaction/searchContactsListByName.do",
+                        data: {name: $.trim($("#search-contact").val())},
+                        dataType: "json",
+                        type: "get",
+                        success: function (data) {
+                            let html = "";
+                            $.each(data, function (i, n) {
+                                html += '<tr>';
+                                html += '<td><input type="radio" name="contacts" value="' + n.id + '"/></td>';
+                                html += '<td id="'+n.id+'">' + n.fullname + '</td>';
+                                html += '<td>' + n.email + '</td>';
+                                html += '<td>' + n.mphone + '</td>';
+                                html += '</tr>';
+                            })
+                            $("#contactsBody").html(html);
+                        }
+                    })
+                    return false;
+                }
+            })
+            // 联系人提交
+            $("#submitContactBtn").click(function(){
+                let id=$("input[name=contacts]:checked").val();
+                let name=$("#"+id).val();
+                $("#contactsId").val(id);
+                $("#create-contactsName").val(name);
+                $("#findContacts").modal("hide");
+            })
+        })
+    </script>
 
 </head>
 <body>
 
     <!-- 查找市场活动 -->
     <div class="modal fade" id="findMarketActivity" role="dialog">
+        <input type="hidden" id="activityId">
         <div class="modal-dialog" role="document" style="width: 80%;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -35,7 +123,7 @@
                     <div class="btn-group" style="position: relative; top: 18%; left: 8px;">
                         <form class="form-inline" role="form">
                             <div class="form-group has-feedback">
-                                <input type="text" class="form-control" style="width: 300px;"
+                                <input id="aname" type="text" class="form-control" style="width: 300px;"
                                        placeholder="请输入市场活动名称，支持模糊查询">
                                 <span class="glyphicon glyphicon-search form-control-feedback"></span>
                             </div>
@@ -52,23 +140,20 @@
                             <td>所有者</td>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td><input type="radio" name="activity"/></td>
-                            <td>发传单</td>
-                            <td>2020-10-10</td>
-                            <td>2020-10-20</td>
-                            <td>zhangsan</td>
-                        </tr>
-                        <tr>
-                            <td><input type="radio" name="activity"/></td>
-                            <td>发传单</td>
-                            <td>2020-10-10</td>
-                            <td>2020-10-20</td>
-                            <td>zhangsan</td>
-                        </tr>
+                        <tbody id="activityBody">
+                        <%--                        <tr>--%>
+                        <%--                            <td><input type="radio" name="activity"/></td>--%>
+                        <%--                            <td>发传单</td>--%>
+                        <%--                            <td>2020-10-10</td>--%>
+                        <%--                            <td>2020-10-20</td>--%>
+                        <%--                            <td>zhangsan</td>--%>
+                        <%--                        </tr>--%>
                         </tbody>
                     </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="submitActivityBtn">提交</button>
                 </div>
             </div>
         </div>
@@ -76,6 +161,7 @@
 
     <!-- 查找联系人 -->
     <div class="modal fade" id="findContacts" role="dialog">
+        <input type="hidden" id="contactsId"/>
         <div class="modal-dialog" role="document" style="width: 80%;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -88,7 +174,7 @@
                     <div class="btn-group" style="position: relative; top: 18%; left: 8px;">
                         <form class="form-inline" role="form">
                             <div class="form-group has-feedback">
-                                <input type="text" class="form-control" style="width: 300px;"
+                                <input id="search-contact" type="text" class="form-control" style="width: 300px;"
                                        placeholder="请输入联系人名称，支持模糊查询">
                                 <span class="glyphicon glyphicon-search form-control-feedback"></span>
                             </div>
@@ -104,21 +190,19 @@
                             <td>手机</td>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td><input type="radio" name="activity"/></td>
-                            <td>李四</td>
-                            <td>lisi@bjpowernode.com</td>
-                            <td>12345678901</td>
-                        </tr>
-                        <tr>
-                            <td><input type="radio" name="activity"/></td>
-                            <td>李四</td>
-                            <td>lisi@bjpowernode.com</td>
-                            <td>12345678901</td>
-                        </tr>
+                        <tbody id="contactsBody">
+                        <%--                        <tr>--%>
+                        <%--                            <td><input type="radio" name="activity"/></td>--%>
+                        <%--                            <td>李四</td>--%>
+                        <%--                            <td>lisi@bjpowernode.com</td>--%>
+                        <%--                            <td>12345678901</td>--%>
+                        <%--                        </tr>--%>
                         </tbody>
                     </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="submitContactBtn">提交</button>
                 </div>
             </div>
         </div>
@@ -159,7 +243,7 @@
             <label for="create-expectedClosingDate" class="col-sm-2 control-label">预计成交日期<span
                     style="font-size: 15px; color: red;">*</span></label>
             <div class="col-sm-10" style="width: 300px;">
-                <input type="text" class="form-control" id="create-expectedClosingDate">
+                <input type="text" class="form-control time1" id="create-expectedClosingDate">
             </div>
         </div>
 
@@ -238,7 +322,7 @@
         <div class="form-group">
             <label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
             <div class="col-sm-10" style="width: 300px;">
-                <input type="text" class="form-control" id="create-nextContactTime">
+                <input type="text" class="form-control time2" id="create-nextContactTime">
             </div>
         </div>
 
