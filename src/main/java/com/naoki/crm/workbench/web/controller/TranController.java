@@ -9,8 +9,10 @@ import com.naoki.crm.workbench.domain.Activity;
 import com.naoki.crm.workbench.domain.Contacts;
 import com.naoki.crm.workbench.service.ActivityService;
 import com.naoki.crm.workbench.service.ContactsService;
+import com.naoki.crm.workbench.service.CustomerService;
 import com.naoki.crm.workbench.service.impl.ActivityServiceImpl;
 import com.naoki.crm.workbench.service.impl.ContactsServiceImpl;
+import com.naoki.crm.workbench.service.impl.CustomerServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,7 +35,16 @@ public class TranController extends HttpServlet {
             searchActivityByName(request,response);
         }else if("/workbench/transaction/searchContactsListByName.do".equals(path)){
             searchContactsListByName(request,response);
+        }else if("/workbench/transaction/getCustomerName.do".equals(path)){
+            getCustomerName(request,response);
         }
+    }
+
+    private void getCustomerName(HttpServletRequest request, HttpServletResponse response) {
+        String name = request.getParameter("name");
+        CustomerService service= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+        List<String> list=service.getCustomerName(name);
+        PrintJson.printJsonObj(response, list);
     }
 
     private void searchContactsListByName(HttpServletRequest request, HttpServletResponse response) {

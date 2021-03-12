@@ -17,8 +17,25 @@
     <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
     <script type="text/javascript"
             src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
     <script>
         $(function () {
+            // 自动补全插件
+            $("#create-accountName").typeahead({
+                source: function (query, process) {
+                    $.get(
+                        "workbench/transaction/getCustomerName.do",
+                        {"name": query},
+                        function (data) {
+                            //alert(data);
+                            process(data);
+                        },
+                        "json"
+                    );
+                },
+                // 延迟加载
+                delay: 1500
+            });
             // 时间控件 向下显示
             $(".time1").datetimepicker({
                 minView: "month",
@@ -83,7 +100,7 @@
                             $.each(data, function (i, n) {
                                 html += '<tr>';
                                 html += '<td><input type="radio" name="contacts" value="' + n.id + '"/></td>';
-                                html += '<td id="'+n.id+'">' + n.fullname + '</td>';
+                                html += '<td id="' + n.id + '">' + n.fullname + '</td>';
                                 html += '<td>' + n.email + '</td>';
                                 html += '<td>' + n.mphone + '</td>';
                                 html += '</tr>';
@@ -95,9 +112,9 @@
                 }
             })
             // 联系人提交
-            $("#submitContactBtn").click(function(){
-                let id=$("input[name=contacts]:checked").val();
-                let name=$("#"+id).val();
+            $("#submitContactBtn").click(function () {
+                let id = $("input[name=contacts]:checked").val();
+                let name = $("#" + id).val();
                 $("#contactsId").val(id);
                 $("#create-contactsName").val(name);
                 $("#findContacts").modal("hide");

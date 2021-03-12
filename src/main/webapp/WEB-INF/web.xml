@@ -88,5 +88,7 @@
         <url-pattern>/workbench/transaction/searchActivityByName.do</url-pattern>
 <!--        联系人-->
         <url-pattern>/workbench/transaction/searchContactsListByName.do</url-pattern>
+<!--        自动补全-->
+        <url-pattern>/workbench/transaction/getCustomerName.do</url-pattern>
     </servlet-mapping>
 </web-app>

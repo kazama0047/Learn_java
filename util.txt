@@ -17,3 +17,22 @@
 
                 }
             })
+            // 自动补全插件
+            //引入
+            <script src="jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
+            //使用
+            $("#create-customerName").typeahead({
+                source: function (query, process) {
+                    $.post(
+                        "workbench/transaction/getCustomerName.do",
+                        {"name": query},
+                        function (data) {
+                            //alert(data);
+                            process(data);
+                        },
+                        "json"
+                    );
+                },
+                // 延迟加载
+                delay: 1500
+            });
