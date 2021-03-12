@@ -37,6 +37,18 @@ public class test {
             System.out.println(str);
         }
     }
+    @Test
+    public void testListeners2(){
+        DicService service=(DicService) ServiceFactory.getService(new DicServiceImpl());
+        Map<String, List<DicValue>> all = service.getAll();
+        Set<String> strings = all.keySet();
+        for(String str:strings){
+            List<DicValue> dicValues = all.get(str);
+            for(DicValue dic:dicValues){
+                System.out.println(str+"=>"+dic.getText());
+            }
+        }
+    }
 }
 
 

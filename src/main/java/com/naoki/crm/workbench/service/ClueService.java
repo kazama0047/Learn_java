@@ -1,6 +1,7 @@
 package com.naoki.crm.workbench.service;
 
 import com.naoki.crm.workbench.domain.Clue;
+import com.naoki.crm.workbench.domain.Tran;
 
 /**
  * @author Kazama
@@ -14,4 +15,6 @@ public interface ClueService {
     boolean unbund(String id);
 
     boolean bund(String cid, String[] aids);
+
+    boolean convert(String clueId, Tran t, String createBy);
 }

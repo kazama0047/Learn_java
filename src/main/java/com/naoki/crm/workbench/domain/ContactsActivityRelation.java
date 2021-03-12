@@ -24,7 +24,4 @@ public class ContactsActivityRelation {
 	public void setActivityId(String activityId) {
 		this.activityId = activityId;
 	}
-	
-	
-	
 }

@@ -9,6 +9,7 @@ import com.naoki.crm.utils.ServiceFactory;
 import com.naoki.crm.utils.UUIDUtil;
 import com.naoki.crm.workbench.domain.Activity;
 import com.naoki.crm.workbench.domain.Clue;
+import com.naoki.crm.workbench.domain.Tran;
 import com.naoki.crm.workbench.service.ActivityService;
 import com.naoki.crm.workbench.service.ClueService;
 import com.naoki.crm.workbench.service.impl.ActivityServiceImpl;
@@ -52,11 +53,43 @@ public class ClueController extends HttpServlet {
         }
     }
 
-    private void convert(HttpServletRequest request, HttpServletResponse response) {
+    // 潜在客户(线索)转换为顾客,信息存入顾客和联系人
+    private void convert(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String clueId = request.getParameter("clueId");
         String flag = request.getParameter("flag");
+        Tran t=null;
+        String createBy=((User)request.getSession().getAttribute("user")).getName();
+        // 如果填写了交易表单
         if("form".equals(flag)){
-            
+            // 创建交易表记录
+            t=new Tran();
+            String money=request.getParameter("money");
+            String name = request.getParameter("name");
+            String expectedDate = request.getParameter("expectedDate");
+            String stage = request.getParameter("stage");
+            String activityId = request.getParameter("activityId");
+            String id=UUIDUtil.getUUID();
+            String createTime=DateTimeUtil.getSysTime();
+            t.setId(id);
+            // 金额
+            t.setMoney(money);
+            // 交易名称
+            t.setName(name);
+            // 活动名称
+            t.setActivityId(activityId);
+            // 预计成交日期
+            t.setExpectedDate(expectedDate);
+            // 交易阶段
+            t.setStage(stage);
+            // 创建时间
+            t.setCreateTime(createTime);
+            // 创建人
+            t.setCreateBy(createBy);
+        }
+        ClueService service= (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        boolean flage1=service.convert(clueId,t,createBy);
+        if(flage1){
+            response.sendRedirect(request.getContextPath()+"/workbench/clue/index.jsp");
         }
     }
 

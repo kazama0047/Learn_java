@@ -72,6 +72,12 @@
         from tbl_clue c join tbl_user u on c.owner=u.id
             where c.id=#{id}
     </select>
+    <select id="getById" resultType="com.naoki.crm.workbench.domain.Clue">
+        select * from tbl_clue where id=#{id}
+    </select>
+    <delete id="delete">
+        delete from tbl_clue where id=#{id}
+    </delete>
 </mapper>
 
 
