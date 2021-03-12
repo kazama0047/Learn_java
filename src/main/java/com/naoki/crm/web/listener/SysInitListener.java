@@ -8,9 +8,7 @@ import com.naoki.crm.utils.ServiceFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Kazama
@@ -31,5 +29,14 @@ public class SysInitListener implements ServletContextListener {
         for(String key :set){
             application.setAttribute(key, map.get(key));
         }
+        Map<String,String> pMap=new HashMap<String,String>();
+        ResourceBundle rb = ResourceBundle.getBundle("Stage2Possibility");
+        Enumeration<String> keys = rb.getKeys();
+        while(keys.hasMoreElements()){
+            String key = keys.nextElement();
+            String value = rb.getString(key);
+            pMap.put(key,value);
+        }
+        application.setAttribute("pMap",pMap);
     }
 }
