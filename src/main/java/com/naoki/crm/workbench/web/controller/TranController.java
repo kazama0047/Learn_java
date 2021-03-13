@@ -51,9 +51,17 @@ public class TranController extends HttpServlet {
             detail(request, response);
         } else if ("/workbench/transaction/getHistoryByTranId.do".equals(path)) {
             getHistoryByTranId(request, response);
-        } else if("/workbench/transaction/changeStage.do".equals(path)){
-            changeStage(request,response);
+        } else if ("/workbench/transaction/changeStage.do".equals(path)) {
+            changeStage(request, response);
+        } else if ("/workbench/transaction/getCharts.do".equals(path)) {
+            getCharts(request, response);
         }
+    }
+
+    private void getCharts(HttpServletRequest request, HttpServletResponse response) {
+        TranService service= (TranService) ServiceFactory.getService(new TranServiceImpl());
+        Map<String,Object> map=service.getCharts();
+        PrintJson.printJsonObj(response, map);
     }
 
     private void changeStage(HttpServletRequest request, HttpServletResponse response) {
@@ -71,13 +79,13 @@ public class TranController extends HttpServlet {
         t.setEditTime(editTime);
         t.setEditBy(editBy);
         // 写入修改后的stage的可能性值
-        Map<String,String> pMap= (Map<String, String>) this.getServletContext().getAttribute("pMap");
+        Map<String, String> pMap = (Map<String, String>) this.getServletContext().getAttribute("pMap");
         t.setPossibility(pMap.get(stage));
-        TranService service= (TranService) ServiceFactory.getService(new TranServiceImpl());
-        boolean flag=service.changeStage(t);
+        TranService service = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        boolean flag = service.changeStage(t);
         Map<String, Object> map = new HashMap<>();
-        map.put("success",flag);
-        map.put("t",t);
+        map.put("success", flag);
+        map.put("t", t);
         PrintJson.printJsonObj(response, map);
     }
 
@@ -86,8 +94,8 @@ public class TranController extends HttpServlet {
         TranService service = (TranService) ServiceFactory.getService(new TranServiceImpl());
         List<TranHistory> list = service.getHistoryListByTranId(tranId);
         // 阶段与可能性
-        Map<String,String> pMap= (Map<String, String>) this.getServletContext().getAttribute("pMap");
-        for(TranHistory th:list){
+        Map<String, String> pMap = (Map<String, String>) this.getServletContext().getAttribute("pMap");
+        for (TranHistory th : list) {
             String stage = th.getStage();
             String possibility = pMap.get(stage);
             // 新建属性

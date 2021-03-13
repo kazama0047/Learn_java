@@ -98,5 +98,7 @@
         <url-pattern>/workbench/transaction/getHistoryByTranId.do</url-pattern>
 <!--        图标变更-->
         <url-pattern>/workbench/transaction/changeStage.do</url-pattern>
+<!--        交易图形数据填充-->
+        <url-pattern>/workbench/transaction/getCharts.do</url-pattern>
     </servlet-mapping>
 </web-app>
