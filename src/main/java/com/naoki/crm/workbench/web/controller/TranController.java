@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,34 @@ public class TranController extends HttpServlet {
             detail(request, response);
         } else if ("/workbench/transaction/getHistoryByTranId.do".equals(path)) {
             getHistoryByTranId(request, response);
+        } else if("/workbench/transaction/changeStage.do".equals(path)){
+            changeStage(request,response);
         }
+    }
+
+    private void changeStage(HttpServletRequest request, HttpServletResponse response) {
+        String id = request.getParameter("id");
+        String stage = request.getParameter("stage");
+        String money = request.getParameter("money");
+        String expectedDate = request.getParameter("expectedDate");
+        String editTime = DateTimeUtil.getSysTime();
+        String editBy = ((User) request.getSession().getAttribute("user")).getName();
+        Tran t = new Tran();
+        t.setId(id);
+        t.setStage(stage);
+        t.setMoney(money);
+        t.setExpectedDate(expectedDate);
+        t.setEditTime(editTime);
+        t.setEditBy(editBy);
+        // 写入修改后的stage的可能性值
+        Map<String,String> pMap= (Map<String, String>) this.getServletContext().getAttribute("pMap");
+        t.setPossibility(pMap.get(stage));
+        TranService service= (TranService) ServiceFactory.getService(new TranServiceImpl());
+        boolean flag=service.changeStage(t);
+        Map<String, Object> map = new HashMap<>();
+        map.put("success",flag);
+        map.put("t",t);
+        PrintJson.printJsonObj(response, map);
     }
 
     private void getHistoryByTranId(HttpServletRequest request, HttpServletResponse response) {

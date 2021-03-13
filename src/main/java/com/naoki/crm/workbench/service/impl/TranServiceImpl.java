@@ -1,5 +1,6 @@
 package com.naoki.crm.workbench.service.impl;
 
+import com.naoki.crm.utils.DateTimeUtil;
 import com.naoki.crm.utils.SqlSessionUtil;
 import com.naoki.crm.utils.UUIDUtil;
 import com.naoki.crm.workbench.dao.CustomerDao;
@@ -71,5 +72,30 @@ public class TranServiceImpl implements TranService {
     @Override
     public List<TranHistory> getHistoryListByTranId(String tranId) {
         return tranHistoryDao.getHistoryListByTranId(tranId);
+    }
+
+    @Override
+    public boolean changeStage(Tran t) {
+        boolean flag=true;
+        // 改变当前交易阶段
+        int count1=tranDao.changeStage(t);
+        if(count1!=1){
+            flag=false;
+        }
+        // 生成交易历史
+        TranHistory th = new TranHistory();
+        th.setId(UUIDUtil.getUUID());
+        //生成的时修改的交易历史
+        th.setCreateBy(t.getEditBy());
+        th.setCreateTime(DateTimeUtil.getSysTime());
+        th.setExpectedDate(t.getExpectedDate());
+        th.setMoney(t.getMoney());
+        th.setStage(t.getStage());
+        th.setTranId(t.getId());
+        int count2=tranHistoryDao.save(th);
+        if(count2!=1){
+            flag=false;
+        }
+        return flag;
     }
 }
