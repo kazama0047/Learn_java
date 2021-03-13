@@ -10,6 +10,7 @@ import com.naoki.crm.utils.UUIDUtil;
 import com.naoki.crm.workbench.domain.Activity;
 import com.naoki.crm.workbench.domain.Contacts;
 import com.naoki.crm.workbench.domain.Tran;
+import com.naoki.crm.workbench.domain.TranHistory;
 import com.naoki.crm.workbench.service.ActivityService;
 import com.naoki.crm.workbench.service.ContactsService;
 import com.naoki.crm.workbench.service.CustomerService;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kazama
@@ -44,26 +46,52 @@ public class TranController extends HttpServlet {
             getCustomerName(request, response);
         } else if ("/workbench/transaction/save.do".equals(path)) {
             save(request, response);
+        } else if ("/workbench/transaction/detail.do".equals(path)) {
+            detail(request, response);
+        } else if ("/workbench/transaction/getHistoryByTranId.do".equals(path)) {
+            getHistoryByTranId(request, response);
         }
     }
 
+    private void getHistoryByTranId(HttpServletRequest request, HttpServletResponse response) {
+        String tranId = request.getParameter("tranId");
+        TranService service = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        List<TranHistory> list = service.getHistoryListByTranId(tranId);
+        PrintJson.printJsonObj(response, list);
+    }
+
+    private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+        TranService service = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        Tran t = service.detail(id);
+        String stage = t.getStage();
+        // 获取保存在全局作用域中的 阶段和可能性值的映射关系
+        Map<String, String> pMap = (Map<String, String>) this.getServletContext().getAttribute("pMap");
+        // 获取交易中的阶段对应的可能性值
+        String possibility = pMap.get(stage);
+        // tran对象中创建possiblity属性,写入后一起传递
+        t.setPossibility(possibility);
+        request.setAttribute("t", t);
+        request.getRequestDispatcher("/workbench/transaction/detail.jsp").forward(request, response);
+    }
+
     private void save(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String id= UUIDUtil.getUUID();
-        String owner=request.getParameter("owner");
-        String money=request.getParameter("money");
-        String name=request.getParameter("name");
-        String expectedDate=request.getParameter("expectedDate");
-        String customerName=request.getParameter("customerName");
-        String stage=request.getParameter("stage");
-        String type=request.getParameter("type");
-        String source=request.getParameter("source");
-        String activityId=request.getParameter("activityId");
-        String contactsId=request.getParameter("contactsId");
-        String createBy=((User)request.getSession().getAttribute("user")).getName();
-        String createTime= DateTimeUtil.getSysTime();
-        String description=request.getParameter("description");
-        String contactSummary=request.getParameter("contactSummary");
-        String nextContactTime=request.getParameter("nextContactTime");
+        String id = UUIDUtil.getUUID();
+        String owner = request.getParameter("owner");
+        String money = request.getParameter("money");
+        String name = request.getParameter("name");
+        String expectedDate = request.getParameter("expectedDate");
+        String customerName = request.getParameter("customerName");
+        String stage = request.getParameter("stage");
+        String type = request.getParameter("type");
+        String source = request.getParameter("source");
+        String activityId = request.getParameter("activityId");
+        String contactsId = request.getParameter("contactsId");
+        String createBy = ((User) request.getSession().getAttribute("user")).getName();
+        String createTime = DateTimeUtil.getSysTime();
+        String description = request.getParameter("description");
+        String contactSummary = request.getParameter("contactSummary");
+        String nextContactTime = request.getParameter("nextContactTime");
         Tran t = new Tran();
         t.setId(id);
         t.setOwner(owner);
@@ -80,10 +108,10 @@ public class TranController extends HttpServlet {
         t.setDescription(description);
         t.setContactSummary(contactSummary);
         t.setNextContactTime(nextContactTime);
-        TranService ts= (TranService) ServiceFactory.getService(new TranServiceImpl());
-        boolean flag=ts.save(t,customerName);
-        if(flag){
-            response.sendRedirect(request.getContextPath()+"/workbench/transaction/index.jsp");
+        TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        boolean flag = ts.save(t, customerName);
+        if (flag) {
+            response.sendRedirect(request.getContextPath() + "/workbench/transaction/index.jsp");
         }
     }
 

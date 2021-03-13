@@ -10,6 +10,8 @@ import com.naoki.crm.workbench.domain.Tran;
 import com.naoki.crm.workbench.domain.TranHistory;
 import com.naoki.crm.workbench.service.TranService;
 
+import java.util.List;
+
 /**
  * @author Kazama
  * @create 2021-03-12-19:40
@@ -59,5 +61,15 @@ public class TranServiceImpl implements TranService {
             flag=false;
         }
         return flag;
+    }
+
+    @Override
+    public Tran detail(String id) {
+        return tranDao.detail(id);
+    }
+
+    @Override
+    public List<TranHistory> getHistoryListByTranId(String tranId) {
+        return tranHistoryDao.getHistoryListByTranId(tranId);
     }
 }
