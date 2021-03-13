@@ -57,6 +57,14 @@ public class TranController extends HttpServlet {
         String tranId = request.getParameter("tranId");
         TranService service = (TranService) ServiceFactory.getService(new TranServiceImpl());
         List<TranHistory> list = service.getHistoryListByTranId(tranId);
+        // 阶段与可能性
+        Map<String,String> pMap= (Map<String, String>) this.getServletContext().getAttribute("pMap");
+        for(TranHistory th:list){
+            String stage = th.getStage();
+            String possibility = pMap.get(stage);
+            // 新建属性
+            th.setPossibility(possibility);
+        }
         PrintJson.printJsonObj(response, list);
     }
 
