@@ -1,6 +1,14 @@
+<%@ page import="com.naoki.crm.settings.domain.DicValue" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.naoki.crm.workbench.domain.Tran" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+    // 获取 阶段 中的所有dicvalue对象
+    List<DicValue> dvList = (List<DicValue>) application.getAttribute("stageList");
+    // 获取 可能性值 和 阶段的映射关系
+    Map<String, String> pMap = (Map<String, String>) application.getAttribute("pMap");
 %>
 <html>
 <head>
@@ -90,6 +98,7 @@
             showHistoryList();
         });
 
+        //显示历史列表
         function showHistoryList() {
             $.ajax({
                 url: "workbench/transaction/getHistoryByTranId.do",
@@ -100,17 +109,22 @@
                     let html = "";
                     $.each(data, function (i, n) {
                         html += '<tr>';
-                        html += '<td>'+n.stage+'</td>';
-                        html += '<td>'+n.money+'</td>';
-                        html += '<td>'+n.possibility+'</td>';
-                        html += '<td>'+n.expectedDate+'</td>';
-                        html += '<td>'+n.creatTime+'</td>';
-                        html += '<td>'+n.createBy+'</td>';
+                        html += '<td>' + n.stage + '</td>';
+                        html += '<td>' + n.money + '</td>';
+                        html += '<td>' + n.possibility + '</td>';
+                        html += '<td>' + n.expectedDate + '</td>';
+                        html += '<td>' + n.creatTime + '</td>';
+                        html += '<td>' + n.createBy + '</td>';
                         html += '</tr>';
                     })
                     $("#tranHistoryBody").html(html);
                 }
             })
+        }
+
+        // 改变交易阶段
+        function changeStage(stage, i) {
+
         }
     </script>
 
@@ -139,7 +153,107 @@
     <!-- 阶段状态 -->
     <div style="position: relative; left: 40px; top: -50px;">
         阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom"
+        <%
+            //当前交易对象
+            Tran t = (Tran) request.getAttribute("t");
+            //当前交易的阶段value
+            String currentStage = t.getStage();
+            //获取 当前阶段可能性值
+            String currentPossibility = pMap.get(currentStage);
+            //如果当前阶段可能性为 0,说明当前阶段 是末尾两个阶段之一,另7个阶段图标确定,均是黑圈
+            if ("0".equals(currentPossibility)) {
+                // 遍历 数据字典_阶段
+                for (int i = 0; i < dvList.size(); i++) {
+                    DicValue dv = dvList.get(i);
+                    String listStage = dv.getValue();
+                    String listPossibility = pMap.get(listStage);
+                    // 如果遍历的阶段为0,则判断当前阶段显示图标,及另一个图标
+                    if ("0".equals(listPossibility)) {
+                        //当前阶段,红叉
+                        if (listStage.equals(currentStage)) {
+                            // 红叉
+        %>
+        <span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')" class="glyphicon glyphicon-remove mystage"
+              data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #FF0000;"></span>
+        -----------
+        <%
+        } else { //非当前阶段,黑叉
+            //黑叉
+        %>
+        <span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')" class="glyphicon glyphicon-remove mystage"
+              data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #000000;"></span>
+        -----------
+        <%
+
+            }
+        } else { //遍历的阶段非0,并不是当前阶段,均为黑圈
+            //黑圈
+        %>
+        <span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')" class="glyphicon glyphicon-record mystage"
+              data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #000000;"></span>
+        -----------
+        <%
+                }
+            }
+        } else { //当前阶段可能性不为0,说明是 前7个阶段之一
+            int index = 0;
+            for (int i = 0; i < dvList.size(); i++) {
+                DicValue dv = dvList.get(i);
+                String listStage = dv.getValue();
+                // 如果遍历到 当前阶段
+                if (listStage.equals(currentStage)) {
+                    // 保存 当前阶段 数组下标
+                    index = i;
+                    break;
+                }
+            }
+            for (int i = 0; i < dvList.size(); i++) {
+                DicValue dv = dvList.get(i);
+                String listStage = dv.getValue();
+                String listPossibility = pMap.get(listStage);
+                // 如果 遍历到可能性为0的阶段,当前阶段不在其中,图标确定为 黑叉
+                if ("0".equals(listPossibility)) {
+                    // 黑叉
+        %>
+        <span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')" class="glyphicon glyphicon-remove mystage"
+              data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #000000;"></span>
+        -----------
+        <%
+        } else {//如果 遍历到可能性非0的7个阶段,当前阶段在其中,需要继续判断
+            if (i == index) { // 如果遍历到的阶段 是 当前阶段
+                // 绿色标记
+        %>
+        <span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')"
+              class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #90F790;"></span>
+        -----------
+        <%
+        } else if (i < index) {// 如果遍历到的阶段 小于 当前阶段
+            // 绿圈
+        %>
+        <span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')" class="glyphicon glyphicon-ok-circle mystage"
+              data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #90F790;"></span>
+        -----------
+        <%
+        } else {
+            // 黑圈
+        %>
+        <span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')" class="glyphicon glyphicon-record mystage"
+              data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #000000;"></span>
+        -----------
+        <%
+                        }
+                    }
+                }
+            }
+        %>
+        <!--<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom"
               data-content="资质审查" style="color: #90F790;"></span>
         -----------
         <span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom"
@@ -165,7 +279,7 @@
         -----------
         <span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom"
               data-content="因竞争丢失关闭"></span>
-        -----------
+        -----------  -->
         <span class="closingDate">${t.expectedDate}</span>
     </div>
 
@@ -327,14 +441,14 @@
                     </tr>
                     </thead>
                     <tbody id="tranHistoryBody">
-<%--                    <tr>--%>
-<%--                        <td>资质审查</td>--%>
-<%--                        <td>5,000</td>--%>
-<%--                        <td>10</td>--%>
-<%--                        <td>2017-02-07</td>--%>
-<%--                        <td>2016-10-10 10:10:10</td>--%>
-<%--                        <td>zhangsan</td>--%>
-<%--                    </tr>--%>
+                    <%--                    <tr>--%>
+                    <%--                        <td>资质审查</td>--%>
+                    <%--                        <td>5,000</td>--%>
+                    <%--                        <td>10</td>--%>
+                    <%--                        <td>2017-02-07</td>--%>
+                    <%--                        <td>2016-10-10 10:10:10</td>--%>
+                    <%--                        <td>zhangsan</td>--%>
+                    <%--                    </tr>--%>
                     <%--						<tr>--%>
                     <%--							<td>需求分析</td>--%>
                     <%--							<td>5,000</td>--%>
